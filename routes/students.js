@@ -28,4 +28,34 @@ router.get('/', (req, res) => {
     res.render('students', { students: students, title: "Students" });
 });
 
+router.get('/edit/:sid', (req, res) => {
+    const studentId = req.params.sid;
+    const student = students.find(s => s.sid === studentId); // Find the student by ID
+
+    if (!student) {
+        return res.send(`<h1>Error: Student with ID ${studentId} not found</h1>`);
+    }
+
+    res.render('editStudents', { student });
+});
+
+router.post('/edit/:sid', (req, res) => {
+    const studentId = req.params.sid;
+    const { name, age } = req.body; // Get updated details
+
+    const student = students.find(s => s.sid === studentId);
+
+    if (!student) {
+        return res.send(`<h1>Error: Student with ID ${studentId} not found</h1>`);
+    }
+
+    // Update student details
+    student.name = name;
+    student.age = age;
+
+    // Redirect back to the students page
+    res.redirect('/students');
+});
+
+
 module.exports = router;

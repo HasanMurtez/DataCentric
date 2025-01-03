@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Update Student</title>
+</head>
+<body>
+    <h1>Update Student</h1>
+    <a href="/students">Home</a>
+    <form action="/students/edit/<%= student.sid %>" method="POST">
+        <label for="sid">Student ID</label>
+        <input type="text" id="sid" name="sid" value="<%= student.sid %>" readonly><br><br>
+
+        <label for="name">Name</label>
+        <input type="text" id="name" name="name" value="<%= student.name %>" readonly><br><br>
+
+        <label for="age">Age</label>
+        <input type="number" id="age" name="age" value="<%= student.age %>" readonly><br><br>
+
+        <button type="button" disabled>Add</button>
+    </form>
+</body>
+</html>
