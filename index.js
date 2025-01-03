@@ -1,11 +1,13 @@
 var express = require('express');
 var app = express();
 
+app.set('view engine', 'ejs');
+app.set('views', './views');
+
 app.get("/", (req, res) => {
-    res.send("<h1>Welcome</h1>");
+    res.render("index");
 });
 
-
 app.listen(3004, () => {
-    console.log("Application listening on port 3004");
+    console.log("Running on port 3004");
 });
