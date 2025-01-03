@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title><%= title %></title>
+</head>
+<body>
+    <h1><%= title %></h1>
+    <a href="/students/add">Add Student</a> | <a href="/">Home</a>
+    <table border="1">
+        <thead>
+            <tr>
+                <th>Student ID</th>
+                <th>Name</th>
+                <th>Age</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            <%students.forEach(student => { %>
+                <tr>
+                    <td><%= student.sid %></td>
+                    <td><%= student.name %></td>
+                    <td><%= student.age %></td>
+                    <td><a href="/students/edit/<%= student.sid %>">Update</a></td>
+                </tr>
+            <% }) %>
+        </tbody>
+    </table>
+</body>
+</html>
