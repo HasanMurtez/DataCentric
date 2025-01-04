@@ -1,7 +1,7 @@
-var express = require('express');
-var router = express.Router();
+const express = require('express');
+const router = express.Router();
 
-var students = [
+let students = [
     { sid: 'G001', name: 'Sean Smith', age: 32 },
     { sid: 'G002', name: 'Alison Conners', age: 23 },
     { sid: 'G003', name: 'Thomas Murphy', age: 19 },
@@ -24,53 +24,61 @@ var students = [
     { sid: 'G0020', name: 'Alice L Estrange', age: 32 },
 ];
 
+
+const findStudent = (sid) => students.find((student) => student.sid === sid);
+const authenticateStudent = ({ sid, name, age }, isNew = true) => {
+    const errors = [];
+    if (isNew) {
+        if (!sid || sid.length !== 4) errors.push("Student ID must be exactly 4 characters.");
+        if (students.some((s) => s.sid === sid)) errors.push("Student ID already exists.");
+    }
+    if (!name || name.length < 2) errors.push("Name should be at least 2 characters.");
+    if (!age || age < 18) errors.push("Age should be 18 or older.");
+    return errors;
+};
+
 //display all students
 router.get('/', (req, res) => {
-    res.render('students', { students: students, title: "Students" });
+    res.render('students', { students, title: "Students" });
 });
 
 router.get('/edit/:sid', (req, res) => {
-    const studentId = req.params.sid;
-    const student = students.find(s => s.sid === studentId); // Find the student by ID
-
-    if (!student) {
-        return res.send(`<h1>Error: Student with ID ${studentId} not found</h1>`);
-    }
-
-    res.render('editStudents', { student, errors: [] }); 
+    const student = findStudent(req.params.sid);
+    if (!student) return res.status(404).send(`<h1>Error: Student not found</h1>`);
+    res.render('editStudents', { student, errors: [] });
 });
 
 router.post('/edit/:sid', (req, res) => {
-    const studentId = req.params.sid;
-    const { name, age } = req.body; // Get updated details
-    let errors = [];
+    const student = findStudent(req.params.sid);
+    if (!student) return res.status(404).send(`<h1>Error: Student not found</h1>`);
 
-    if (!name || name.length < 2) {
-        errors.push("Student Name should be at least 2 characters");
+    const { name, age } = req.body;
+    const errors = authenticateStudent({ name, age }, false);
+
+    if (errors.length) {
+        return res.render('editStudents', { student: { ...student, name, age }, errors });
     }
 
-    if (!age || age < 18) {
-        errors.push("Student Age should be at least 18");
-    }
-    // Find student
-    const student = students.find(s => s.sid === studentId);
-    if (!student) {
-        return res.send(`<h1>Error: Student with ID ${studentId} not found</h1>`);
-    }
-
-    // If there are errors reload the form with messages and previous data.
-    if (errors.length > 0) {
-        return res.render('editStudents', { 
-            student: { sid: studentId, name, age }, 
-            errors 
-        });
-    }
-
-    // Update the student details
     student.name = name;
     student.age = age;
-
-    // Redirect back to the students page
     res.redirect('/students');
 });
+
+router.get('/add', (req, res) => {
+    res.render('addStudent', { errors: [], student: {} });
+});
+
+//adding a new student
+router.post('/add', (req, res) => {
+    const { sid, name, age } = req.body;
+    const errors = authenticateStudent({ sid, name, age });
+
+    if (errors.length) {
+        return res.render('addStudent', { errors, student: { sid, name, age } });
+    }
+
+    students.push({ sid, name, age });
+    res.redirect('/students');
+});
+
 module.exports = router;
