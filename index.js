@@ -8,6 +8,7 @@ app.use(express.urlencoded({ extended: true }));
 
 // Routes
 app.use('/students', require('./routes/students'));
+app.use('/grades', require('./routes/grades'));
 
 // Home Page
 app.get('/', (req, res) => {

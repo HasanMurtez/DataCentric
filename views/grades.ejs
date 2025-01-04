@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title><%= title %></title>
+</head>
+<body>
+    <h1><%= title %></h1>
+    <a href="/">Home</a>
+    <table border="1">
+        <thead>
+            <tr>
+                <th>Student</th>
+                <th>Module</th>
+                <th>Grade</th>
+            </tr>
+        </thead>
+        <tbody>
+            <% grades.forEach(grade => { %>
+                <tr>
+                    <td><%= grade.student %></td>
+                    <td><%= grade.module || '' %></td>
+                    <td><%= grade.grade !== null ? grade.grade : '' %></td>
+                </tr>
+            <% }) %>
+        </tbody>
+    </table>
+</body>
+</html>
