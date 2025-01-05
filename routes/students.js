@@ -24,10 +24,13 @@ let students = [
     { sid: 'G0020', name: 'Alice L Estrange', age: 32 },
 ];
 
-
+//find student
 const findStudent = (sid) => students.find((student) => student.sid === sid);
+
 const authenticateStudent = ({ sid, name, age }, isNew = true) => {
     const errors = [];
+
+    //cheak if student id is 4 characters and if student ID already exists.
     if (isNew) {
         if (!sid || sid.length !== 4) errors.push("Student ID must be exactly 4 characters.");
         if (students.some((s) => s.sid === sid)) errors.push("Student ID already exists.");
@@ -42,12 +45,14 @@ router.get('/', (req, res) => {
     res.render('students', { students, title: "Students" });
 });
 
+//displaying edit form 
 router.get('/edit/:sid', (req, res) => {
     const student = findStudent(req.params.sid);
     if (!student) return res.status(404).send(`<h1>Error: Student not found</h1>`);
     res.render('editStudents', { student, errors: [] });
 });
 
+//editing student details
 router.post('/edit/:sid', (req, res) => {
     const student = findStudent(req.params.sid);
     if (!student) return res.status(404).send(`<h1>Error: Student not found</h1>`);
@@ -56,12 +61,14 @@ router.post('/edit/:sid', (req, res) => {
     const errors = authenticateStudent({ name, age }, false);
 
     if (errors.length) {
+        //if they are errors when editing details, it will show error messages and the previous data
         return res.render('editStudents', { student: { ...student, name, age }, errors });
     }
-
+    
+    //update student details.
     student.name = name;
     student.age = age;
-    res.redirect('/students');
+    res.redirect('/students'); //redirects back to students page
 });
 
 router.get('/add', (req, res) => {
